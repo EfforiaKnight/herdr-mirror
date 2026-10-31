@@ -37,15 +37,15 @@ jobs:
       fail-fast: false
       matrix:
         component: [core, app]
-    # On manual runs, mirror only the chosen component ("all" runs both)
-    if: >-
-      github.event_name != 'workflow_dispatch'
-      || inputs.component == 'all'
-      || inputs.component == matrix.component
     steps:
       - uses: actions/checkout@v4
 
       - name: Mirror ${{ matrix.component }} from releases.herdr.dev
+        # On manual runs, mirror only the chosen component ("all" runs both)
+        if: >-
+          github.event_name != 'workflow_dispatch'
+          || inputs.component == 'all'
+          || inputs.component == matrix.component
         run: bash scripts/mirror.sh "${{ matrix.component }}"
         env:
           GH_TOKEN: ${{ github.token }}
