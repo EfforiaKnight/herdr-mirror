@@ -8,6 +8,12 @@ Unofficial mirror of **herdr-core** (`hc`) and the **Herdr desktop app**. It sto
 
 ## Use this as a replacement for releases.herdr.dev
 
+### First-time activation
+
+GitHub can disable Actions when you create a fork. Open the **Actions** tab. If GitHub shows an enable-workflows prompt, enable the workflows. Then open **Mirror herdr releases**, choose **all**, and select **Run workflow**. The first run creates the mirrored releases and publishes the feed files. After that, the six-hour schedule keeps the mirror current.
+
+If the feed-publisher job cannot push its generated files, open **Settings → Actions → General → Workflow permissions** and allow read and write permissions for the workflow token.
+
 The feed base URL is:
 
 ```text
@@ -39,16 +45,19 @@ irm "$mirror/app/install.ps1" | iex
 # irm "$mirror/core/install.ps1" | iex
 ```
 
-Close and reopen Herdr after setting the user variable. Windows apps that were already running do not receive a changed environment.
+Sign out of Windows and sign back in after setting the user variable. Then open Herdr. A running app, or an app started by an old Explorer process, does not receive the changed environment.
 
 ### Linux and WSL
 
-Set the variable in your shell profile so commands and app processes started from that login can use the mirror:
+For WSL, persist the variable in your login profile and install the app:
 
 ```sh
-export HERDR_RELEASES_URL="https://raw.githubusercontent.com/EfforiaKnight/herdr-mirror/main"
+echo 'export HERDR_RELEASES_URL="https://raw.githubusercontent.com/EfforiaKnight/herdr-mirror/main"' >> ~/.profile
+. ~/.profile
 curl -fsSL "$HERDR_RELEASES_URL/app/install.sh" | sh
 ```
+
+A GUI app started outside that login shell may need the variable in its desktop-session environment too.
 
 For a core-only install, use `$HERDR_RELEASES_URL/core/install.sh`.
 
