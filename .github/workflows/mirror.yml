@@ -70,6 +70,6 @@ jobs:
       - name: Publish update feeds and installer scripts
         run: bash scripts/publish-feeds.sh
         env:
-          GH_TOKEN: \${{ github.token }}
-          GITHUB_TOKEN: \${{ github.token }}
-          GITHUB_REPOSITORY: \${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
