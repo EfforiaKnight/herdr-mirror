@@ -23,6 +23,7 @@ on:
     paths:
       - ".github/workflows/mirror.yml"
       - "scripts/mirror.sh"
+      - "scripts/publish-feeds.sh"
 
 permissions:
   contents: write
@@ -40,6 +41,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate shell scripts
+        run: bash -n scripts/mirror.sh scripts/publish-feeds.sh
+
       - name: Mirror ${{ matrix.component }} from releases.herdr.dev
         # On manual runs, mirror only the chosen component ("all" runs both)
         if: >-
@@ -50,3 +54,22 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
+
+
+  publish-feeds:
+    needs: mirror
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: publish-herdr-feeds
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish update feeds and installer scripts
+        run: bash scripts/publish-feeds.sh
+        env:
+          GH_TOKEN: \${{ github.token }}
+          GITHUB_TOKEN: \${{ github.token }}
+          GITHUB_REPOSITORY: \${{ github.repository }}

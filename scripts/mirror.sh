@@ -53,11 +53,17 @@ TAG="$component-v$VERSION"
 TITLE="$title_prefix $VERSION"
 log "latest version $VERSION (release tag $TAG)"
 
-# 2. Skip if already mirrored
+# 2. Check whether this release already exists. Older mirror releases predate
+# feed-manifest.json; backfill that asset once without replacing the archives.
+release_exists=0
 if [ -n "$REPO" ] && [ "$DRY_RUN" != "1" ]; then
   if gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
-    log "release $TAG already exists in $REPO, nothing to do"
-    exit 0
+    release_exists=1
+    if gh release view "$TAG" --repo "$REPO" --json assets --jq '.assets[].name' | grep -Fxq 'feed-manifest.json'; then
+      log "release $TAG already exists and includes its update feed, nothing to do"
+      exit 0
+    fi
+    log "release $TAG exists without feed-manifest.json; will add it"
   fi
 fi
 
@@ -92,7 +98,28 @@ for target in "${targets[@]}"; do
   echo "$target <- $url" >> SOURCES.txt
 done
 
-# 4. The app also ships a macOS DMG for website downloads, outside the manifest.
+# 4. Keep a copy of the upstream metadata for Herdr's updater. The only
+# change is each target URL: it now points to this release's identical asset.
+[ -n "$REPO" ] || fail "GITHUB_REPOSITORY is not set; refusing to publish a feed"
+release_base="https://github.com/$REPO/releases/download/$TAG"
+jq --arg base "$release_base" '
+  .targets |= with_entries(
+    .value.url = ($base + "/" + (.value.url | sub("[?#].*$"; "") | split("/")[-1]))
+  )
+' latest.json > assets/feed-manifest.json
+
+jq -e --arg version "$VERSION" --arg prefix "$release_base/" '
+  .version == $version
+  and (.targets | type == "object" and length > 0)
+  and all(.targets[]; ((.url | startswith($prefix)) and (.sha256 | test("^[0-9a-fA-F]{64}$"))))
+' assets/feed-manifest.json >/dev/null || fail "generated feed-manifest.json is invalid"
+if [ "$component" = "core" ]; then
+  jq -e '.generation | type == "number"' assets/feed-manifest.json >/dev/null || fail "core manifest has no numeric generation"
+fi
+echo "$(sha256 assets/feed-manifest.json)  feed-manifest.json" >> SHA256SUMS.txt
+log "generated feed-manifest.json with GitHub Release asset URLs"
+
+# 5. The app also ships a macOS DMG for website downloads, outside the manifest.
 #    Best effort: its sha256 is not in the manifest, so it is listed but not verified against one.
 if [ "$component" = "app" ]; then
   dmg="Herdr-$VERSION.dmg"
@@ -112,12 +139,13 @@ if [ "$DRY_RUN" = "1" ]; then
   log "dry run complete, assets:"
   ls -la assets/
   cat SHA256SUMS.txt
+  cat assets/feed-manifest.json
   exit 0
 fi
 
 [ -n "$REPO" ] || fail "GITHUB_REPOSITORY is not set; refusing to create release"
 
-# 5. Release notes with provenance
+# 6. Release notes with provenance
 {
   echo "Unofficial mirror of **$title_prefix $VERSION**, copied from the release server the official installers use."
   echo
@@ -142,12 +170,19 @@ fi
   echo '```'
 } > notes.md
 
-# 6. Create the release and upload assets
+# 7. Create the release and upload assets
 log "creating release $TAG in $REPO"
-gh release create "$TAG" \
-  --repo "$REPO" \
-  --title "$TITLE" \
-  --notes-file notes.md \
-  assets/* SHA256SUMS.txt
+if [ "$release_exists" = "1" ]; then
+  gh release upload "$TAG" \
+    --repo "$REPO" \
+    --clobber \
+    assets/feed-manifest.json SHA256SUMS.txt
+else
+  gh release create "$TAG" \
+    --repo "$REPO" \
+    --title "$TITLE" \
+    --notes-file notes.md \
+    assets/* SHA256SUMS.txt
+fi
 
 log "mirror complete: $TAG"
