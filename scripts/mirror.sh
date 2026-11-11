@@ -86,7 +86,9 @@ for target in "${targets[@]}"; do
     *) fail "unexpected url for $target: $url" ;;
   esac
 
-  fname="${url##*/}"
+  # A query or fragment is not part of the asset filename.
+  fname="$(printf '%s' "$url" | sed 's/[?#].*$//' | sed 's#.*/##')"
+  [ -n "$fname" ] || fail "cannot determine asset filename for $target"
   log "fetching $target: $fname"
   curl -fsSL -o "assets/$fname" "$url" || fail "download failed: $url"
 
