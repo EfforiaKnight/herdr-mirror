@@ -1,23 +1,23 @@
 {
-  "version": "0.1.16",
+  "version": "0.1.17",
   "core_min": "0.1.11",
-  "notes": "Herdr 0.1.16",
+  "notes": "Herdr 0.1.17",
   "targets": {
     "linux-aarch64": {
-      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.16/herdr-app-linux-aarch64.tar.gz",
-      "sha256": "efeef4f1759b0e8900f205c2c22b14287a112f874406539b4ea1b3be24b73631"
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.17/herdr-app-linux-aarch64.tar.gz",
+      "sha256": "a8c06bf7a3fce06a73a9a50e709250aac8f442fedcc6c49f3157b76dd8dd6d93"
     },
     "linux-x86_64": {
-      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.16/herdr-app-linux-x86_64.tar.gz",
-      "sha256": "282d2632196b238206cfe66bfb61c0faf299ca1c91843bd076521bbe36571216"
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.17/herdr-app-linux-x86_64.tar.gz",
+      "sha256": "2188f4d7d5cf041450dbdbf2e14649244b1a6274a1080bdd97fa7bc450e65ca1"
     },
     "macos-aarch64": {
-      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.16/herdr-app-macos-aarch64.tar.gz",
-      "sha256": "99000875ead9333a33f5cb60274ccd9cf9d3e47360f03613a467295105c71c04"
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.17/herdr-app-macos-aarch64.tar.gz",
+      "sha256": "e0341679ed38162ba920b623c9f27bdd866f3bf7f4ae0dc08398503db4e1137a"
     },
     "windows-x86_64": {
-      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.16/herdr-app-windows-x86_64.tar.gz",
-      "sha256": "abdc5400679cb730223a43b2a5216999a1edad3c2e80368f0ad3c43ea9895fe3"
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/app-v0.1.17/herdr-app-windows-x86_64.tar.gz",
+      "sha256": "9a2bcfb8cf7210668965ebb6eaf68465fa8378841f578a3b116fd06550bd31bb"
     }
   }
 }
