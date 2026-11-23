@@ -1,0 +1,27 @@
+{
+  "version": "0.1.22",
+  "generation": 1,
+  "notes": "**A subscription can name the documents it wants, instead of receiving every one.** `hc events --doc <name>` (repeatable; a name ending in `*` is a prefix) delivers only those document changes, so a program that watches a single document no longer has every document change from every terminal delivered to it, and no longer has to filter them out itself. An unfiltered subscriber still hears every document, and existing terminal filters keep their behavior; a subscriber that selects a terminal and also names documents hears both. (#273, thanks @felixzsh)",
+  "targets": {
+    "linux-aarch64": {
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/core-v0.1.22/herdr-core-linux-aarch64.tar.gz",
+      "sha256": "98757985245d45f8d73dd85e68b139b7f167c28488bb89edd9834c3f5a5cf4cf"
+    },
+    "linux-x86_64": {
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/core-v0.1.22/herdr-core-linux-x86_64.tar.gz",
+      "sha256": "3054ec3992ce80c5715d721caa9dcefa6056721d15dc113f4750afce763ba5df"
+    },
+    "macos-aarch64": {
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/core-v0.1.22/herdr-core-macos-aarch64.tar.gz",
+      "sha256": "90798daadefa8d126b90ef0bcdbe9c7dda9c6cfbf011a247065ab5da348f350e"
+    },
+    "macos-x86_64": {
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/core-v0.1.22/herdr-core-macos-x86_64.tar.gz",
+      "sha256": "35144041969e870ddb4edcd2fd08fd26dfe5cee7d18e6b48adb276f90a48aa19"
+    },
+    "windows-x86_64": {
+      "url": "https://github.com/EfforiaKnight/herdr-mirror/releases/download/core-v0.1.22/herdr-core-windows-x86_64.zip",
+      "sha256": "37cae9d6c522e205efcdb55a42d354285f41b8cbb4c6e60fb505b73b151966c9"
+    }
+  }
+}
